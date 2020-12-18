@@ -156,7 +156,7 @@ function setupWAN()
 
         ip rule add iif $monitored_if table $RT_TABLE &> /dev/null
 
-        ip route flush table $RT_TABLE
+        ip route flush table $RT_TABLE &> /dev/null
 
         wan_ptp=`ifconfig $wan_if | grep POINTOPOINT | wc -l`
 

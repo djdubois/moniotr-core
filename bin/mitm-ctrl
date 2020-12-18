@@ -31,7 +31,7 @@ function help()
 
 function mitm-status {
     PIDS=$(ps aux | grep "[p]ython.*mitmdump.*$MITMPROXY_SCRIPT" | awk '{print $2}')
-    RULE=`iptables -t nat -S PREROUTING | grep -- "-j MITM"`
+    RULE=`iptables -w -t nat -S PREROUTING | grep -- "-j MITM"`
 
     if [ ! -z "$PIDS" ] ; then
         echo Capture using mitmproxy is started on the following PIDs: $PIDS
@@ -49,9 +49,9 @@ function mitm-status {
 function mitm-stop()
 {
     # Reset firewall rules
-    iptables -t nat -D PREROUTING -j MITM &> /dev/null
-    iptables -t nat -F MITM &> /dev/null
-    iptables -t nat -X MITM &> /dev/null
+    iptables -w -t nat -D PREROUTING -j MITM &> /dev/null
+    iptables -w -t nat -F MITM &> /dev/null
+    iptables -w -t nat -X MITM &> /dev/null
 
     mitm-status &> /dev/null
     if [ $? == "0" ]; then
@@ -83,10 +83,10 @@ function mitm-start()
     INTERCEPT_PORTS="${ALL_PORTS// /,}"
 
     # Reset firwall rules
-    iptables -t nat -N MITM &> /dev/null
-    iptables -t nat -F MITM
-    iptables -t nat -D PREROUTING -j MITM &> /dev/null
-    iptables -t nat -A PREROUTING -j MITM
+    iptables -w -t nat -N MITM &> /dev/null
+    iptables -w -t nat -F MITM
+    iptables -w -t nat -D PREROUTING -j MITM &> /dev/null
+    iptables -w -t nat -A PREROUTING -j MITM
 
     # Process all mitmproxy instances
     for index in "${!network_names[@]}" ; do
@@ -110,14 +110,14 @@ function mitm-start()
                 $MITMPROXY_MITMDUMP --set confdir="$MITMPROXY_CONF_DIR" -s "$MITMPROXY_SCRIPT" --set mitm_exception="$CURRENT_DIR/mitm-exception" \
                     --set http_log_name="$FLOW" --set traffic_path="$MITM_TRAFFIC_EXPERIMENTS" --set network_name="$NETWORK_NAME" \
                     --mode transparent -p $MITMPROXY_PORT -w +$DUMP --ssl-insecure >> $LOG 2>&1
-                RULE=`iptables -t nat -S PREROUTING | grep -- "-j MITM"`
+                RULE=`iptables -w -t nat -S PREROUTING | grep -- "-j MITM"`
             done
         ) &
         disown
     done 2> /dev/null
 
     # Sync all existing devices
-    MACS=`iptables -t nat -S | grep -- "^-N ..:..:..:..:..:.." | cut -d ' ' -f2`
+    MACS=`iptables -w -t nat -S | grep -- "^-N ..:..:..:..:..:.." | cut -d ' ' -f2`
     for MAC in $MACS; do
         ( $CURRENT_DIR/mitm-exception sync $MAC &> /dev/null ) &
         disown
