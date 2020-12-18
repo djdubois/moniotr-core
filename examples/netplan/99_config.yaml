@@ -1,0 +1,142 @@
+network:
+    version: 2
+    renderer: networkd
+    ethernets:
+        eth0:
+            addresses: []
+            dhcp4: true
+            dhcp6: false
+            macaddress: d8:9e:f3:14:9f:47
+        eth1:
+            addresses: []
+            dhcp4: false
+            dhcp6: false
+            macaddress: 00:1b:21:a7:68:c0
+        eth-switch:
+            addresses: []
+            dhcp4: false
+            dhcp6: false
+            macaddress: 00:1b:21:a7:68:c1
+        eth-mirror:
+            addresses: []
+            dhcp4: false
+            dhcp6: false
+            macaddress: 00:1b:21:a7:68:c2
+        eth-copy:
+            addresses: []
+            dhcp4: false
+            dhcp6: false
+            macaddress: 00:1b:21:a7:68:c3
+    vlans:
+        switch-vlan2:
+            id: 2
+            link: eth-switch
+        switch-vlan3:
+            id: 3
+            link: eth-switch
+        switch-vlan4:
+            id: 4
+            link: eth-switch
+        switch-vlan5:
+            id: 5
+            link: eth-switch
+        switch-vlan6:
+            id: 6
+            link: eth-switch
+        switch-vlan7:
+            id: 7
+            link: eth-switch
+        switch-vlan8:
+            id: 8
+            link: eth-switch
+        switch-vlan9:
+            id: 9
+            link: eth-switch
+        switch-vlan10:
+            id: 10
+            link: eth-switch
+        switch-vlan11:
+            id: 11
+            link: eth-switch
+        switch-vlan12:
+            id: 12
+            link: eth-switch
+        switch-vlan13:
+            id: 13
+            link: eth-switch
+        switch-vlan14:
+            id: 14
+            link: eth-switch
+        switch-vlan15:
+            id: 15
+            link: eth-switch
+        switch-vlan16:
+            id: 16
+            link: eth-switch
+        switch-vlan17:
+            id: 17
+            link: eth-switch
+        switch-vlan18:
+            id: 18
+            link: eth-switch
+        switch-vlan19:
+            id: 19
+            link: eth-switch
+        switch-vlan20:
+            id: 20
+            link: eth-switch
+        switch-vlan21:
+            id: 21
+            link: eth-switch
+        switch-vlan22:
+            id: 22
+            link: eth-switch
+        switch-vlan23:
+            id: 23
+            link: eth-switch
+        switch-vlan24:
+            id: 24
+            link: eth-switch
+        mirror-vlan10:
+            id: 10
+            link: eth-mirror
+        mirror-vlan11:
+            id: 11
+            link: eth-mirror
+        mirror-vlan12:
+            id: 12
+            link: eth-mirror
+        copy-vlan10:
+            id: 10
+            link: eth-copy
+        copy-vlan11:
+            id: 11
+            link: eth-copy
+        copy-vlan12:
+            id: 12
+            link: eth-copy
+    bridges:
+        br9:
+            interfaces: [eth1,eth-switch]
+            addresses: [192.168.9.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br10:
+            interfaces: [switch-vlan7,switch-vlan8,switch-vlan9,switch-vlan10,switch-vlan11,switch-vlan12,switch-vlan13,switch-vlan14,switch-vlan15,switch-vlan16,switch-vlan17,switch-vlan18,switch-vlan19,switch-vlan20,switch-vlan21,switch-vlan22,switch-vlan23,switch-vlan24]
+            addresses: [192.168.10.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br11:
+            interfaces: []
+            addresses: [192.168.11.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br12:
+            interfaces: []
+            addresses: [192.168.12.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false

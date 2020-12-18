@@ -1,0 +1,164 @@
+# Mon(IoT)r Configuration file
+
+### WARNING: Some changes to this file have immediate effects once saved. ###
+### It is recommended to stop Mon(IoT)r before editing this file.         ###
+
+# (mandatory) Installation dir for Mon(IoT)r
+#
+MONIOTR_DIR="/opt/moniotr"
+
+# (mandatory) Interfaces of monitored networks.
+# These are the networks actually used by the monitored devices (the ones
+# that have the DHCPD server running). At least one network interface is
+# needed. Providing more than one interface means that there are more
+# than a single monitored network. If it is the case, all other options that
+# refer to networks need the same number of parameters (separated ny
+# spaces).
+# It is important to note that you have multiple interfaces on the same
+# monitored network, those intefaces should be connected to a single
+# bridge, and such bridge should appear on this option as a single
+# interface.
+#
+MONITORED_INTERFACES="br10 br11 br12"
+
+# (optional) WAN interfaces for the monitored networks.
+# These are the gateways that will handle the destination of the traffic for the monitored networks. 
+# routing and firewall rules to route traffic through these gateways, including NAT will be 
+# configured when the networking component of Mon(IoT)r is started.
+# A special value of "default" will use the default gateway of the system.
+# A special value of "none" will block WAN traffic.
+# If this option is not set, all the monitored networks will be configured with the default gateway.
+# WARNING: If this option is set, There should be a gateway configured for each monitored network!
+#
+# WAN_GATEWAYS="default default default"
+
+# (optional) Names of monitored networks.
+# If this option is not set, the monitored networks will have the
+# same names of the monitored network interfaces.
+# WARNING: These names can be arbitrary, but one for each monitored network 
+# MUST must be specified! They must be different!
+#
+NETWORK_NAMES="unctrl ctrl1 ctrl2"
+
+# (optional) Copy all the traffic of monitored network (including the traffic from the
+# switch mirror and from the wifi sources if any of them has been configured) to
+# other network interfaces.
+# This option is optional and only useful if the monitored traffic has to be analyzed 
+# externally.
+# WARNING: If this option is not commented out, there should be at least one source of
+# traffic for each monitored network! If a network should not be copied, use "none".
+#
+# COPY_MONITORED_NETWORKS="copy-vlan10 copy-vlan11 copy-vlan12"
+
+# (optional) Devices name configuration
+#
+DEVICES_FILE="$MONIOTR_DIR/etc/devices.txt"
+
+# (mandatory) Destination of captured traffic and metadata
+#
+TRAFFIC_DIR="$MONIOTR_DIR/traffic"
+
+# (mandatory) Destination of temporary data 
+#
+TEMP_DIR="$MONIOTR_DIR/tmp"
+
+# (mandatory) Destination of log files
+#
+LOG_DIR="$MONIOTR_DIR/log"
+
+# (mandatory) Path for tcpdump
+#
+TCPDUMP="/usr/sbin/tcpdump"
+
+# (optional) Packet limit for tcpdump in bytes. A value of "0" means
+# unlimited size. Default value: "0"
+#
+# TCPDUMP_PACKET_LIMIT="0"
+
+# (mandatory) Enable mitmproxy when Mon(IoT)r is (re)started.
+# Set this variable to true to start mitmproxy automatically
+# when Mon(IoT)r is started. There will be an instance of mitmproxy
+# started for each monitored network, each one with its own port,
+# which can be configured with the following options.
+#
+MITMPROXY_AUTOSTART="true"
+
+# (mandatory) Set the default policy for TLS interception.
+# Valid options are: off, manual-exceptions, auto-exceptions,
+# ignore-exceptions.
+#               off - this policy prevents TLS interception.
+# manual-exceptions - this policy enables TLS interception, exceptions
+#                     are supported, but have to be manually added.
+#   auto-exceptions - this policy enables TLS interception, exceptions
+#                     are supported and automatically added when TLS
+#                     interception fails (if supported by mitmproxy).
+# ignore-exceptions - this policy enables TLS interception, and any
+#                     exceptions are ignored.
+# A device can override the default policy by configuring the mitm-tls-policy.txt
+#
+MITMPROXY_DEFAULT_TLS_POLICY="off"
+
+# (mandatory) Path for the mitmdump executable of mitmproxy.
+#
+MITMPROXY_MITMDUMP="/usr/local/bin/mitmdump"
+
+# (mandatory) Local TCP ports for mitmproxy. These ports should not be in use
+# by other processes.
+# WARNING: There should be a different local port for each monitored network
+#
+MITMPROXY_LOCAL_PORTS="10080 10081 10082"
+
+# (mandatory) Intercept ports for mitmproxy. These are the ports that will be
+# intercepted by mitmproxy. Only HTTP and HTTPS (TLS) traffic can be intercepted.
+# If intercepting HTTPS/TLS traffic, the client must trust the mitmproxy
+# root certificate.
+#
+MITMPROXY_INTERCEPT_HTTP_PORTS="80 8000 8080"
+MITMPROXY_INTERCEPT_HTTPS_PORTS="443 8443"
+
+# (mandatory) Configuration and certificate directory for mitmproxy.
+# If the directory is empty, new certificates will be generated the first time
+# mitmproxy is started.
+#
+MITMPROXY_CONF_DIR="$MONIOTR_DIR/mitmproxy"
+
+# (optional) Experiments group. This is the PAM group that has the possibility to run
+# experiments using "tag-experiment", and to delete/modify their data.
+#
+# TAGGED_EXPERIMENTS_GROUP="traffic"
+
+# (mandatory) Enable DNS override using dnsmasq. If this is enabled, you have to
+# specify the nameservers in the resolv.conf file, which override any nameserver
+# the device receives from the DHCP server.
+# This option is not compatible with the WAN_GATEWAYS option. If WAN_GATEWAYS is
+# configured, DNS_OVERRIDE must be false, otherwise an error is thrown.
+DNS_OVERRIDE="false"
+
+# (optional) Set default DNS resolv.conf file for each monitored network when DNS_OVERRIDE is active.
+# If this option in set, it should be configured for every monitored network (using spaces to
+# separate them).
+# If this option is not set a "default" value will be used for every monitored network.
+#
+# A special value of "default" will use the $MONIOTR_DIR/etc/resolv.conf as default resolv.conf.
+# A special value of "none" will block WAN traffic.
+#
+# DNS_OVERRIDE_RESOLV_CONF="default default default"
+
+# (optional) Set the path of the DNSMASQ executable. This is mandatory if DNS_OVERRIDE
+# if true. Default value: "/usr/sbin/dnsmasq"
+# DNSMASQ="/usr/sbin/dnsmasq"
+
+# (mandatory) Enable IP block using iptables.
+IP_BLOCK="true"
+
+# (optional) Local port to listen to for blocked IP connection whose policy is "listen".
+IP_BLOCK_LISTEN_PORT="56565"
+
+# (optional) Automatically add exceptions to IP_BLOCK for domains overridden using
+# DNS_OVERRIDE (default: "false"). This option only has effects if DNS_OVERRIDE and IP_BLOCK
+# are both true.
+# If this option is "true", all IP addresses of  destinations matching dns overrride rules
+# will be allowed (any protocol - any port) by IP_BLOCK, even if explicitily blocked.
+# Another side effect is that IP_BLOCK will not block udp/tcp port 53 (DNS) anymore.
+# To reset exceptions, you have to modify or sync the dns-override destinations.
+IP_BLOCK_DNS_OVERRIDE_EXCEPTION="false"

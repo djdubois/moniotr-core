@@ -1,0 +1,50 @@
+network:
+    version: 2
+    renderer: networkd
+    ethernets:
+        eth0:
+            addresses: []
+            dhcp4: true
+            dhcp6: false
+    vlans:
+        switch-vlan2:
+            optional: true
+            id: 2
+            link: eth0
+        switch-vlan3:
+            optional: true
+            id: 3
+            link: eth0
+        switch-vlan4:
+            optional: true
+            id: 4
+            link: eth0
+    bridges:
+        br9:
+            optional: true
+            interfaces: []
+            addresses: [192.168.9.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br10:
+            optional: true
+            interfaces: [switch-vlan2,switch-vlan3,switch-vlan4]
+            addresses: [192.168.10.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br11:
+            optional: true
+            interfaces: []
+            addresses: [192.168.11.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
+        br12:
+            optional: true
+            interfaces: []
+            addresses: [192.168.12.254/24]
+            parameters:
+                forward-delay: 0
+                stp: false
