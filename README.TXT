@@ -1,9 +1,11 @@
-=====================
-Mon(IoT)r IoT TESTBED
-=====================
+==========================
+Mon(IoT)r IoT TESTBED v1.0
+==========================
 
 0) You can find example configuration files for netplan, hostapd (in case of use Wi-Fi access point),
-isc-dhcp-server, iptables-save, and sysctl in the examples directory (or under examples/nuc, if using Intel NUC).
+isc-dhcp-server, iptables-save, and sysctl in the examples directory.
+This guide assumes you are running Ubuntu Server 20.04 and that you have already configured the
+network interfaces, DHCP, and NAT (if not, have a look at the examples).
 
 1) Copy the content of this directory to any location, for example on /opt/moniotr
 
@@ -12,10 +14,10 @@ apt install python3 python3-pip isc-dhcp-server tcpdump bridge-utils
 
 3) Install the following python dependence and modification (please do NOT use a different version of mitmproxy):
 pip3 install mitmproxy==4.0.4
-cp lib/server.py /usr/local/lib/python3.6/dist-packages/mitmproxy/proxy/
+cp lib/server.py /usr/local/lib/python3.8/dist-packages/mitmproxy/proxy/
 
 4) Configure app-armor in such a way that dhcpd and tcpdump are excluded:
-mkdir /etc/apparmor.d/disable
+mkdir -p /etc/apparmor.d/disable
 ln -s /etc/apparmor.d/usr.sbin.dhcpd /etc/apparmor.d/disable/usr.sbin.dhcpd
 ln -s /etc/apparmor.d/usr.sbin.tcpdump /etc/apparmor.d/disable/
 service apparmor restart
@@ -32,6 +34,9 @@ on commit {
 
 If Mon(IoT)r was not installed in /opt/moniotr, replace /opt/moniotr with the installation directory.
 
+Note: this assumes you have already configured a DHCP server on your monitored interfaces. If not,
+have a look at examples/dhcp/dhcpd.conf as inspiration for your /etc/dhcp/dhcpd.conf
+
 Finally, restart isc-dhcp-server:
 service isc-dhcp-server restart
 
@@ -40,26 +45,35 @@ Add to the end of the file the following line:
 
 dhcpd ALL=(ALL) NOPASSWD: ALL
 
+Note: this may lower the security of your system.
+
 7) Copy etc/moniotr.conf.example to etc/moniotr.conf and edit its values according to the local configuration
 of the system. You can find explanations inside the file.
 
-8) Configure IP forward by typing this command: sysctl -w net.ipv4.ip_forward=1
+8) Copy etc/devices.txt.example to etc/devices.txt, this file should contain a list of mac addresses followed
+by the device names (feel free to edit the example).
+
+9) Configure IP forward by typing this command: sysctl -w net.ipv4.ip_forward=1
 
 Then, make the change persistent by adding/uncommenting the following line in /etc/sysctl.conf
 net.ipv4.ip_forward=1
 
-9) Configure firewall using iptables and save it using iptables-persistent
+10) Configure firewall using iptables and save it using iptables-persistent
 apt-get install iptables-persistent
 
-As an alternative use the rules.v4 file (in examples/iptables), copy it to /etc/iptables, and load it with:
+Answer yes, when asked to save the rules.
+
+As an alternative use the rules.v4 file (in examples/iptables), edit it with your network interfacesm and 
+then copy it to /etc/iptables, and load it with:
 iptables-restore < /etc/iptables/rules.v4
 
-10) You can start Mon(IoT)r using:
+11) You can start Mon(IoT)r using:
 
 /opt/moniotr/bin/moniotr-ctrl start
 
-The same command can be added to /etc/rc.local to activate Mon(IoT)r at startup
-If Mon(IoT)r was not installed in /opt/moniotr, replace /opt/moniotr with the installation directory.
+The same command can be added to /etc/rc.local to activate Mon(IoT)r at startup.
+If you have no rc.local configured, follow this guide: 
+https://linuxmedium.com/how-to-enable-etc-rc-local-with-systemd-on-ubuntu-20-04/
 
 ====================================
 APPENDIX 1. Configuring DNS override
