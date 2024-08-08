@@ -68,20 +68,26 @@ LOG_DIR="$MONIOTR_DIR/log"
 
 # (mandatory) Path for tcpdump
 #
-TCPDUMP="/usr/sbin/tcpdump"
+TCPDUMP="/usr/bin/tcpdump"
 
-# (optional) Packet limit for tcpdump in bytes. A value of "0" means
-# unlimited size. Default value: "0"
+# (optional) PAM user that will run tcpdump. Pcap directories will also be
+# readable and writable by this user. Default value is "tcpdump".
 #
-# TCPDUMP_PACKET_LIMIT="0"
+TCPDUMP_USER="tcpdump"
 
-# (mandatory) Enable mitmproxy when Mon(IoT)r is (re)started.
+# (optional) Enable DNS traffic capture when Mon(IoT)r is (re)started.
+# Set this variable to true to start a tcpdump instance to capture
+# DNS traffic automatically when Mon(IoT)r is started. 
+#
+DNSDUMP_AUTOSTART="false"
+
+# (optional) Enable mitmproxy when Mon(IoT)r is (re)started.
 # Set this variable to true to start mitmproxy automatically
 # when Mon(IoT)r is started. There will be an instance of mitmproxy
 # started for each monitored network, each one with its own port,
 # which can be configured with the following options.
 #
-MITMPROXY_AUTOSTART="true"
+MITMPROXY_AUTOSTART="false"
 
 # (mandatory) Set the default policy for TLS interception.
 # Valid options are: off, manual-exceptions, auto-exceptions,

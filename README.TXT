@@ -1,12 +1,12 @@
 ==========================
-Mon(IoT)r IoT TESTBED v1.0
+Mon(IoT)r IoT TESTBED v1.1
 ==========================
 
 PREREQUISITES
 
 This installation guide assumes the following:
 
-- You run an Ubuntu Server 20.04 Linux distribution
+- You run an Ubuntu Server 24.04 Linux distribution
 - You have a working network configuration with at least two
   network interfaces, one for the Internet, and one for the
   IoT devices
@@ -36,7 +36,7 @@ cp lib/server.py /usr/local/lib/python3.8/dist-packages/mitmproxy/proxy/
 4) Configure app-armor in such a way that dhcpd and tcpdump are excluded:
 mkdir -p /etc/apparmor.d/disable
 ln -s /etc/apparmor.d/usr.sbin.dhcpd /etc/apparmor.d/disable/usr.sbin.dhcpd
-ln -s /etc/apparmor.d/usr.sbin.tcpdump /etc/apparmor.d/disable/
+ln -s /etc/apparmor.d/usr.bin.tcpdump /etc/apparmor.d/disable/
 service apparmor restart
 
 5) Configure isc-dhcp-server for the network interfaces that will host the monitored devices.
@@ -158,7 +158,7 @@ following this tutorial: https://github.com/lixingcong/dnsmasq-regex
    :.com: -> for a destination that contains 'com' preceded by any character.
              For example "a.como" "acomo"
 
-   The regex much be between two colons ':' to be evaluated as a regex.
+   The regex must be between two colons ':' to be evaluated as a regex.
    Regex will have priority over all other destination rules.
 
    NOTE: use '' when using special characters such as * to prevent bash from

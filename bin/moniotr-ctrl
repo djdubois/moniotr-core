@@ -30,8 +30,11 @@ function help()
 function moniotr-start
 {
     $CURRENT_DIR/networking-ctrl start
-    if [ $MITMPROXY_AUTOSTART == "true" ]; then
+    if [ "$MITMPROXY_AUTOSTART" == "true" ]; then
         $CURRENT_DIR/mitm-ctrl start
+    fi
+    if [ "$DNSDUMP_AUTOSTART" == "true" ]; then
+        $CURRENT_DIR/dnsdump-ctrl start
     fi
     $CURRENT_DIR/tcpdump-ctrl start
 }

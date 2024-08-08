@@ -30,6 +30,7 @@ TCPDUMP_ENABLED_FILE="$TRAFFIC_DIR/.tcpdump-enabled"
 LAST_BOOT=`who -b | tail -c 17`
 TIMESTAMP=`date "+%Y-%m-%d %H:%M:%S"`
 BOGUS_PORT="47676"
+TCPDUMP_USER="tcpdump"
 
 source $MONIOTR_CONF
 
@@ -106,6 +107,7 @@ check_set TRAFFIC_DIR $TRAFFIC_DIR
 check_set LOG_DIR $LOG_DIR
 check_set TEMP_DIR $TEMP_DIR
 check_set TCPDUMP $TCPDUMP
+check_set TCPDUMP_USER $TCPDUMP_USER
 check_set MITMPROXY_DEFAULT_TLS_POLICY $MITMPROXY_DEFAULT_TLS_POLICY
 check_set MITMPROXY_MITMDUMP $MITMPROXY_MITMDUMP
 check_set MITMPROXY_LOCAL_PORTS $MITMPROXY_LOCAL_PORTS
@@ -141,10 +143,6 @@ if [ -z "$DNS_OVERRIDE_RESOLV_CONF" ]; then
     for ((i=2;i<=$NUM_NETWORKS;i++)); do
         DNS_OVERRIDE_RESOLV_CONF="$DNS_OVERRIDE_RESOLV_CONF default"
     done
-fi
-
-if [ -z "$TCPDUMP_PACKET_LIMIT" ]; then
-    TCPDUMP_PACKET_LIMIT="0"
 fi
 
 if [ -z "$DNSMASQ" ]; then

@@ -111,7 +111,8 @@ if [[ -f "$TCPDUMP_ENABLED_FILE" ]] && [[ "$LAST_BOOT" == `cat $TCPDUMP_ENABLED_
 
     if [ -z "$MYPID" ]
     then
-        sudo nice -20 $TCPDUMP -Z root -i $MONITOR_IF -B 32768 -nns 0 -C 128 -G 86400 -w "$TRAFFIC_DIR/by-mac/$MAC/$NETWORK_NAME/$FILENAME" ether host $MAC &> /dev/null &
+        chown "$TCPDUMP_USER" "$TRAFFIC_DIR/by-mac/$MAC/$NETWORK_NAME"
+        sudo nice -20 $TCPDUMP -i $MONITOR_IF -B 16384 -nns 0 -C 128 -G 86400 -Z "$TCPDUMP_USER" -w "$TRAFFIC_DIR/by-mac/$MAC/$NETWORK_NAME/$FILENAME" ether host $MAC &> /dev/null &
         disown
     fi
 fi
