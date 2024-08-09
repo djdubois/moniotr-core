@@ -32,10 +32,11 @@ apt install python3 python3-pip isc-dhcp-server tcpdump bridge-utils
 3) Install the following python dependence and modification (please do NOT use a different version of mitmproxy):
 pip3 install mitmproxy==4.0.4
 cp lib/server.py /usr/local/lib/python3.8/dist-packages/mitmproxy/proxy/
+NOTE: this step is deprecated (will be updated in the future)
 
 4) Configure app-armor in such a way that dhcpd and tcpdump are excluded:
 mkdir -p /etc/apparmor.d/disable
-ln -s /etc/apparmor.d/usr.sbin.dhcpd /etc/apparmor.d/disable/usr.sbin.dhcpd
+ln -s /etc/apparmor.d/usr.sbin.dhcpd /etc/apparmor.d/disable/
 ln -s /etc/apparmor.d/usr.bin.tcpdump /etc/apparmor.d/disable/
 service apparmor restart
 
@@ -57,10 +58,8 @@ have a look at examples/dhcp/dhcpd.conf as inspiration for your /etc/dhcp/dhcpd.
 Finally, restart isc-dhcp-server:
 service isc-dhcp-server restart
 
-6) Add root privileges to isc-dhcp-server for executing setup-device by using the "visudo" command as root.
-Add to the end of the file the following line:
-
-dhcpd ALL=(ALL) NOPASSWD: ALL
+6) Set isc-dhcp-server to run as root. Edit /etc/./systemd/system/multi-user.target.wants/isc-dhcp-server.service
+Replace "exec dhcpd -user dhcpd -group dhcpd" with "exec dhcpd"
 
 Note: this may lower the security of your system. Non-root execution is not supported yet, but will be
       added in the future.
@@ -86,7 +85,9 @@ Note: if you had a working NAT configuration, this step is not necessary because
 of a NAT configuration. In any case, iptables-persistent will save your NAT configuration and apply
 it every time the system boots.
 
-11) You can start Mon(IoT)r using:
+11) Make sure that the directory /opt/moniotr/traffic is writeable by the tcpdump user.
+
+12) You can start Mon(IoT)r using:
 
 /opt/moniotr/bin/moniotr-ctrl start
 
